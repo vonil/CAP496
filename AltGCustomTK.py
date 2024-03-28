@@ -82,16 +82,16 @@ class GPRPyApp:
 
         proj = gp.gprpyProfile()
 
-        btn_frm = ctk.CTkScrollableFrame(master,border_width= 1, width = 570, bg_color="light grey",fg_color="light grey")
+        btn_frm = ctk.CTkScrollableFrame(master, border_width= 1, width = 570, bg_color="light grey", fg_color="light grey")
     
         btn_frm.grid(row = 0, column= 0, sticky= 'ns', rowspan = 2)
         # btn_frm.grid_propagate(0)
         btn_frm.columnconfigure(1, minsize=570, weight=1)
-        btn_frm.grid_propagate = 1
+        # btn_frm.grid_propagate = 1
         master.rowconfigure(1, weight=10) 
 
-        fig=Figure(figsize=(self.widfac,self.highfac),facecolor="#d3d3d3")
-        a=fig.add_subplot(111)
+        fig = Figure(figsize=(self.widfac,self.highfac), facecolor="#d3d3d3")
+        a = fig.add_subplot(111)
         mpl.rcParams.update({'font.size': mpl.rcParams['font.size']*self.widfac})
         a.tick_params(direction='out',length=6*self.widfac,width=self.highfac)
         
@@ -110,7 +110,8 @@ class GPRPyApp:
         #Contains all buttons and labels relation to File Operations
         FM_cpane = cp(btn_frm, 'File Controls -', 'File Controls +')
         FM_cpane.grid(row = 0, column = 0, sticky = 'ew')
-        FM_cpane.grid_propagate = True
+        
+        # FM_cpane.grid_propagate = True
 
         #Set frame color:
         # Initialize style
@@ -118,6 +119,7 @@ class GPRPyApp:
         # Create style used by default for all Frames
         s.configure('TFrame', background='#d3d3d3')
         s.configure('TButton', font=('Helvetica', 12))
+        s.configure('TLabel', background='#d3d3d3', font = ('Helvetica', 12))
         
 
 
@@ -126,7 +128,9 @@ class GPRPyApp:
             command=lambda : [self.loadData(proj), 
                               self.plotProfileData(proj,fig=fig,a=a,canvas=canvas)])
         LoadButton.configure(height = HEIGHT, width = WIDTH)         
+        # LoadButton.pack(side = "left", )
         LoadButton.grid(row=0, column=0, sticky='nsew',pady = PAD)
+        # LoadButton.place(x=5,y=20)
         self.balloon.bind(LoadButton,"Load .gpr, .DT1, or .DZT data.")
 
 
@@ -136,7 +140,7 @@ class GPRPyApp:
                               self.undo(proj), 
                               self.plotProfileData(proj,fig=fig,a=a,canvas=canvas)])
         undoButton.configure(height = HEIGHT, width = WIDTH)
-        undoButton.grid(row=1, column=0, sticky='ew',pady= PAD )
+        undoButton.grid(row=1, column=0, sticky='ew',pady= PAD, padx=0 )
         self.balloon.bind(undoButton,
                           '"Undoes" the most recent processing step and\n' 
                           'sets the data back to its previous state.\n' 
@@ -206,8 +210,10 @@ class GPRPyApp:
 ####################################################################################### 
         #View Control Pane and all buttons within it
         VC_cpane = cp(btn_frm, 'View Controls -', 'View Controls +')
-        VC_cpane.grid(row = 1, column = 0, sticky = 'ew',) 
-        VC_cpane.grid_propagate = True
+        VC_cpane.grid(row = 1, column = 0, sticky = 'ew') 
+        # VC_cpane.frame.grid(row=0,column=0)
+        # VC_cpane.frame.grid( padx=10, pady=10)
+        # VC_cpane.grid_propagate = True
         VC_cpane.columnconfigure(1, minsize=570, weight=1)
 
 
@@ -253,17 +259,17 @@ class GPRPyApp:
                           "in a text file.")
         
         #Set X-Range 
-        lbl_xrng = tk.Label(VC_cpane.frame, text= "Set X - Range", font = HEADING)
+        lbl_xrng = tk.Label(VC_cpane.frame, text= "Set X - Range", font = HEADING, background="light grey")
         lbl_xrng.grid(row = 2, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
 
-        lbl_minx = tk.Label(VC_cpane.frame, text= "Min:")
-        lbl_minx.grid(row = 3, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
+        lbl_minx = tk.Label(VC_cpane.frame, text= "Min:", background="light grey")
+        lbl_minx.grid(row = 3, column = 0, sticky= 'w', padx= PAD, pady = PAD)
 
         #Changed to take input from text box
         self.tb_minx = tk.Text(VC_cpane.frame, height = 1, width = 3)
         self.tb_minx.grid(row = 3, column = 1, sticky= 'ew', padx= PAD, pady = PAD)
 
-        lbl_maxx = tk.Label(VC_cpane.frame, text= "Max:")
+        lbl_maxx = tk.Label(VC_cpane.frame, text= "Max:", background="light grey")
         lbl_maxx.grid(row = 3, column = 2, sticky= 'ew', padx= PAD, pady = PAD)
 
         #Changed to take input from text box
@@ -281,16 +287,16 @@ class GPRPyApp:
         
 
         # Y range
-        lbl_yrng = tk.Label(VC_cpane.frame, text= "Set Y - Range", font = HEADING)
+        lbl_yrng = tk.Label(VC_cpane.frame, text= "Set Y - Range", font = HEADING, background="light grey")
         lbl_yrng.grid(row = 4, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
 
-        lbl_miny = tk.Label(VC_cpane.frame, text= "Min:")
-        lbl_miny.grid(row = 5, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
+        lbl_miny = tk.Label(VC_cpane.frame, text= "Min:", background="light grey")
+        lbl_miny.grid(row = 5, column = 0, sticky= ' w', padx= PAD, pady = PAD)
 
         self.tb_miny = tk.Text(VC_cpane.frame, height = 1, width = 3)
         self.tb_miny.grid(row = 5, column = 1, sticky= 'ew', padx= PAD, pady = PAD)
 
-        lbl_maxy = tk.Label(VC_cpane.frame, text= "Max:")
+        lbl_maxy = tk.Label(VC_cpane.frame, text= "Max:", background="light grey")
         lbl_maxy.grid(row = 5, column = 2, sticky= 'ew', padx= PAD, pady = PAD)
 
         self.tb_maxy = tk.Text(VC_cpane.frame, height = 1, width = 3)
@@ -306,8 +312,8 @@ class GPRPyApp:
         self.balloon.bind(YrngButton,"Set the y-axis display limits.")
 
         # Contrast
-        contrlabel = tk.Label(VC_cpane.frame, text  = "Contrast",height = 1,width = WIDTH, font = HEADING)
-        contrlabel.grid(row=6, column=0, sticky='nsew')
+        contrlabel = tk.Label(VC_cpane.frame, text  = "Contrast", font = HEADING, background="light grey")
+        contrlabel.grid(row=6, column=0, sticky='w')
         self.balloon.bind(contrlabel,"Set color saturation")
         self.contrast = tk.DoubleVar(VC_cpane.frame)
         contrbox = tk.Entry(VC_cpane.frame, textvariable=self.contrast, width=WIDTH)
@@ -335,10 +341,10 @@ class GPRPyApp:
         self.balloon.bind(PlotButton,"Set Colour and Contrast")
     
         # Aspect
-        lbl_aspr = tk.Label(VC_cpane.frame, text= "Aspect Ratio", font = HEADING)
-        lbl_aspr.grid(row = 7, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
+        lbl_aspr = tk.Label(VC_cpane.frame, text= "Aspect Ratio", font = HEADING, background="light grey")
+        lbl_aspr.grid(row = 7, column = 0, sticky= 'w', padx= PAD, pady = PAD)
         self.tb_aspr = tk.Text(VC_cpane.frame, height=1, width=3)
-        self.tb_aspr.grid(row=7, column=1, sticky='ew', padx=PAD, pady=PAD)
+        self.tb_aspr.grid(row=7, column=1, sticky='w', padx=PAD, pady=PAD)
         AspButton = ctk.CTkButton(VC_cpane.frame,
             text="Go", 
             command=lambda : [self.setAspect(),
@@ -353,8 +359,8 @@ class GPRPyApp:
         Velo_cpane.grid(row = 2, column = 0, sticky = 'ew',) 
 
         # Set Velocity
-        lbl_velo = tk.Label(Velo_cpane.frame, text= "Set Velocity", font = HEADING)
-        lbl_velo.grid(row = 0, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
+        lbl_velo = tk.Label(Velo_cpane.frame, text= "Set Velocity", font = HEADING, background="light grey")
+        lbl_velo.grid(row = 0, column = 0, sticky= 'w', padx= PAD, pady = PAD)
         self.tb_velo = tk.Text(Velo_cpane.frame, height = 1, width= WIDTH)
         self.tb_velo.grid(row = 0, column = 1, sticky= 'ew', padx= PAD, pady = PAD)
         setVelButton = ctk.CTkButton(Velo_cpane.frame, 
@@ -386,8 +392,8 @@ class GPRPyApp:
         
 
         # Migration Button
-        lbl_mig = tk.Label(Velo_cpane.frame, text= "Fk Migration", font = HEADING)
-        lbl_mig.grid(row = 2, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
+        lbl_mig = tk.Label(Velo_cpane.frame, text= "Fk Migration", font = HEADING, background="light grey")
+        lbl_mig.grid(row = 2, column = 0, sticky= 'w', padx= PAD, pady = PAD)
         tb_mig = tk.Text(Velo_cpane.frame, height = 1, width= WIDTH )
         tb_mig.grid(row = 2, column = 1, sticky= 'ew', padx= PAD, pady = PAD)
         migButton = ctk.CTkButton(Velo_cpane.frame, 
@@ -404,7 +410,7 @@ class GPRPyApp:
         
         
         # Topo Correct
-        lbl_topo = tk.Label(Velo_cpane.frame, text= "Topo Correction", font = HEADING)
+        lbl_topo = tk.Label(Velo_cpane.frame, text= "Topo Correction", font = HEADING, background="light grey")
         lbl_topo.grid(row = 3, column = 0, sticky= 'ew', padx= PAD, pady = PAD)
         tb_topo = tk.Text(Velo_cpane.frame, height = 1, width= WIDTH)
         tb_topo.grid(row = 3, column = 1, sticky= 'ew', padx= PAD, pady = PAD)
@@ -425,21 +431,21 @@ class GPRPyApp:
         # Profile Controls
         ProfC_cpane = cp(btn_frm, 'Profile Controls -', 'Profile Controls +')
         ProfC_cpane.grid(row=3, column=0, sticky='ew')
-        ProfC_cpane.columnconfigure(2,weight=100)
+        # ProfC_cpane.columnconfigure(2,weight=100)
 
 
 
         # Adjust Profile
-        lbl_adjprf = tk.Label(ProfC_cpane.frame, text="Adjust Profile", font=HEADING)
-        lbl_adjprf.grid(row=0, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_adjprf = tk.Label(ProfC_cpane.frame, text="Adjust Profile", font=HEADING, background="light grey")
+        lbl_adjprf.grid(row=0, column=0, sticky='w', padx=PAD, pady=PAD)
 
-        lbl_adjprfMin = tk.Label(ProfC_cpane.frame, text="Min X-Value:")
-        lbl_adjprfMin.grid(row=1, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_adjprfMin = tk.Label(ProfC_cpane.frame, text="Min X-Value:", background="light grey")
+        lbl_adjprfMin.grid(row=1, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_adjprfMin = tk.Text(ProfC_cpane.frame, height=1, width=3)  # Reduced width to 2
-        self.tb_adjprfMin.grid(row=1, column=1, sticky='ew', padx=PAD, pady=PAD)
+        self.tb_adjprfMin.grid(row=1, column=1, sticky='w', padx=PAD, pady=PAD)
 
-        lbl_adjprfMax = tk.Label(ProfC_cpane.frame, text="Max X- Value:")
-        lbl_adjprfMax.grid(row=1, column=2, sticky='ew', padx=PAD, pady=PAD)
+        lbl_adjprfMax = tk.Label(ProfC_cpane.frame, text="Max X- Value:", background="light grey")
+        lbl_adjprfMax.grid(row=1, column=2, sticky='w', padx=PAD, pady=PAD)
         self.tb_adjprfMax = tk.Text(ProfC_cpane.frame, height=1, width=3)  # Kept width as 3
         self.tb_adjprfMax.grid(row=1, column=3, sticky='ew', padx=PAD, pady=PAD)
 
@@ -457,8 +463,8 @@ class GPRPyApp:
 
         
         # Set new zero time
-        lbl_zt = tk.Label(ProfC_cpane.frame, text=" Set Zero Time", font=HEADING)
-        lbl_zt.grid(row=2, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_zt = tk.Label(ProfC_cpane.frame, text=" Set Zero Time", font=HEADING, background="light grey")
+        lbl_zt.grid(row=2, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_zt = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_zt.grid(row=2, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -474,8 +480,8 @@ class GPRPyApp:
 
 
         # TimeZero Adjust = align traces
-        lbl_altr = tk.Label(ProfC_cpane.frame, text="Allign Traces", font=HEADING)
-        lbl_altr.grid(row=3, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_altr = tk.Label(ProfC_cpane.frame, text="Allign Traces", font=HEADING, background="light grey")
+        lbl_altr.grid(row=3, column=0, sticky='w', padx=PAD, pady=PAD)
         tb_altr = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         tb_altr.grid(row=3, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -494,8 +500,8 @@ class GPRPyApp:
 
 
         # truncate Y
-        lbl_adjprf = tk.Label(ProfC_cpane.frame, text="Truncate Y", font=HEADING)
-        lbl_adjprf.grid(row=4, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_adjprf = tk.Label(ProfC_cpane.frame, text="Truncate Y", font=HEADING, background="light grey")
+        lbl_adjprf.grid(row=4, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_adjprf = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_adjprf.grid(row=4, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -512,16 +518,16 @@ class GPRPyApp:
                         "than the chosen value.")
 
         # Cut Button
-        lbl_cut = tk.Label(ProfC_cpane.frame, text="Cut Profile", font=HEADING)
-        lbl_cut.grid(row=5, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_cut = tk.Label(ProfC_cpane.frame, text="Cut Profile", font=HEADING, background="light grey")
+        lbl_cut.grid(row=5, column=0, sticky='w', padx=PAD, pady=PAD)
 
-        lbl_cutx = tk.Label(ProfC_cpane.frame, text="x - value")
-        lbl_cutx.grid(row=6, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_cutx = tk.Label(ProfC_cpane.frame, text="x - value", background="light grey")
+        lbl_cutx.grid(row=6, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_cutx = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_cutx.grid(row=6, column=1, sticky='ew', padx=PAD, pady=PAD)
 
-        lbl_cuty = tk.Label(ProfC_cpane.frame, text="y - value")
-        lbl_cuty.grid(row=6, column=2, sticky='ew', padx=PAD, pady=PAD)
+        lbl_cuty = tk.Label(ProfC_cpane.frame, text="y - value", background="light grey")
+        lbl_cuty.grid(row=6, column=2, sticky='w', padx=PAD, pady=PAD)
         self.tb_cuty = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_cuty.grid(row=6, column=3, sticky='ew', padx=PAD, pady=PAD)
 
@@ -536,8 +542,8 @@ class GPRPyApp:
 
 
         # Dewow
-        lbl_dewow = tk.Label(ProfC_cpane.frame, text="Dewow", font=HEADING)
-        lbl_dewow.grid(row=7, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_dewow = tk.Label(ProfC_cpane.frame, text="Dewow", font=HEADING, background="light grey")
+        lbl_dewow.grid(row=7, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_dewow = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_dewow.grid(row=7, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -554,8 +560,8 @@ class GPRPyApp:
 
 
         # Rem mean trace
-        lbl_rmt = tk.Label(ProfC_cpane.frame, text="Remove Mean Traces", font=HEADING)
-        lbl_rmt.grid(row=8, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_rmt = tk.Label(ProfC_cpane.frame, text="Remove Mean Traces", font=HEADING, background="light grey")
+        lbl_rmt.grid(row=8, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_rmt = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_rmt.grid(row=8, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -572,8 +578,8 @@ class GPRPyApp:
                         "waves, or horizontal features.")
 
         # Smooth
-        lbl_smth = tk.Label(ProfC_cpane.frame, text="Smooth (Temp)", font=HEADING)
-        lbl_smth.grid(row=9, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_smth = tk.Label(ProfC_cpane.frame, text="Smooth (Temp)", font=HEADING, background="light grey")
+        lbl_smth.grid(row=9, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_smth1 = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_smth1.grid(row=9, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -590,16 +596,16 @@ class GPRPyApp:
 
 
         # profile Smoothing Button
-        lbl_pfsmth = tk.Label(ProfC_cpane.frame, text="Profile Smoothing", font=HEADING)
-        lbl_pfsmth.grid(row=10, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_pfsmth = tk.Label(ProfC_cpane.frame, text="Profile Smoothing", font=HEADING, background="light grey")
+        lbl_pfsmth.grid(row=10, column=0, sticky='w', padx=PAD, pady=PAD)
 
-        lbl_trnum = tk.Label(ProfC_cpane.frame, text="Trace Number")
-        lbl_trnum.grid(row=11, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_trnum = tk.Label(ProfC_cpane.frame, text="Trace Number", background="light grey")
+        lbl_trnum.grid(row=11, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_trnum = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
-        self.tb_trnum.grid(row=11, column=1, sticky='ew', padx=PAD, pady=PAD)
+        self.tb_trnum.grid(row=11, column=1, sticky='w', padx=PAD, pady=PAD)
 
-        lbl_cpynum = tk.Label(ProfC_cpane.frame, text="Copies Number")
-        lbl_cpynum.grid(row=11, column=2, sticky='ew', padx=PAD, pady=PAD)
+        lbl_cpynum = tk.Label(ProfC_cpane.frame, text="Copies Number", background="light grey")
+        lbl_cpynum.grid(row=11, column=2, sticky='w', padx=PAD, pady=PAD)
         self.tb_cpynum = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_cpynum.grid(row=11, column=3, sticky='ew', padx=PAD, pady=PAD)
 
@@ -617,8 +623,8 @@ class GPRPyApp:
 
 
         # Gain
-        lbl_tpow = tk.Label(ProfC_cpane.frame, text="Tpow", font=HEADING)
-        lbl_tpow.grid(row=12, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_tpow = tk.Label(ProfC_cpane.frame, text="Tpow", font=HEADING, background="light grey")
+        lbl_tpow.grid(row=12, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_smth = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_smth.grid(row=12, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -634,8 +640,8 @@ class GPRPyApp:
                         "the user provides p. This gain tends to be\n"
                         "less aggressive than agc.")
 
-        lbl_agc = tk.Label(ProfC_cpane.frame, text="AGC", font=HEADING)
-        lbl_agc.grid(row=13, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_agc = tk.Label(ProfC_cpane.frame, text="AGC", font=HEADING, background="light grey")
+        lbl_agc.grid(row=13, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_agc = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_agc.grid(row=13, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -651,21 +657,21 @@ class GPRPyApp:
                         "each trace.")
 
         # show hyperbola
-        lbl_hypb = tk.Label(ProfC_cpane.frame, text="Plot Hyperbola", font=HEADING)
-        lbl_hypb.grid(row=14, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_hypb = tk.Label(ProfC_cpane.frame, text="Plot Hyperbola", font=HEADING, background="light grey")
+        lbl_hypb.grid(row=14, column=0, sticky='w', padx=PAD, pady=PAD)
 
-        lbl_hypbcent = tk.Label(ProfC_cpane.frame, text="Hyperbola Center on Profile [m]")
-        lbl_hypbcent.grid(row=15, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_hypbcent = tk.Label(ProfC_cpane.frame, text="Hyperbola Center on Profile [m]", background="light grey")
+        lbl_hypbcent.grid(row=15, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_hypbcent = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_hypbcent.grid(row=15, column=1, sticky='ew', padx=PAD, pady=PAD)
 
-        lbl_hypbapx = tk.Label(ProfC_cpane.frame, text="Hyperbola Apex Location [ns]")
-        lbl_hypbapx.grid(row=15, column=2, sticky='ew', padx=PAD, pady=PAD)
+        lbl_hypbapx = tk.Label(ProfC_cpane.frame, text="Hyperbola Apex Location [ns]", background="light grey")
+        lbl_hypbapx.grid(row=15, column=2, sticky='w', padx=PAD, pady=PAD)
         self.tb_hypbapx = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_hypbapx.grid(row=15, column=3, sticky='ew', padx=PAD, pady=PAD)
 
-        lbl_hypbvelo = tk.Label(ProfC_cpane.frame, text="Estimated Velocity [m/ns]")
-        lbl_hypbvelo.grid(row=16, column=0, sticky='ew', padx=PAD, pady=PAD)
+        lbl_hypbvelo = tk.Label(ProfC_cpane.frame, text="Estimated Velocity [m/ns]", background="light grey")
+        lbl_hypbvelo.grid(row=16, column=0, sticky='w', padx=PAD, pady=PAD)
         self.tb_hypbvelo = tk.Text(ProfC_cpane.frame, height=1, width=WIDTH)
         self.tb_hypbvelo.grid(row=16, column=1, sticky='ew', padx=PAD, pady=PAD)
 
@@ -739,8 +745,12 @@ class GPRPyApp:
         self.data_points = []
         self.scalar_cut_plane = None 
 
+
+        
+
     def loadInfoCollectScreen(self):
         ld = topLevel_test.Info_Collect()
+        
 
 # Button and checkbutton, these will
 # appear in collapsible pane container
