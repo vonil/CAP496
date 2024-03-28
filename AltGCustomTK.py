@@ -31,7 +31,7 @@ from tvtk.api import tvtk
 from vtk.util.numpy_support import vtk_to_numpy
 from tkinter import filedialog
 import tkinter as tk
- 
+import csv
 # Making root window or parent window
 
 
@@ -707,125 +707,39 @@ class GPRPyApp:
         DataC_cpane.grid_propagate
         DataC_cpane.pack_propagate
 
+        # Button for importing VTK file
         importDataCubeBtn = ctk.CTkButton(DataC_cpane.frame,
-            text="DataCube", 
+            text="Import VTK/VTS File", 
             command=self.load_vtk_file) 
         importDataCubeBtn.configure(height=HEIGHT, width=WIDTH)         
         importDataCubeBtn.grid(row=0, column=0, sticky='nsew', pady=PAD)
         self.balloon.bind(importDataCubeBtn, "Click to open the Mayavi window with data.")
-        
+
+        # Button for generating data at current position
+        generate_data_btn = ctk.CTkButton(DataC_cpane.frame, text="Generate Data", command=self.generate_data_for_current_position)
+        generate_data_btn.configure(height=HEIGHT, width=WIDTH)
+        generate_data_btn.grid(row=1, column=0, sticky='nsew', pady=PAD)
+
+        # Reset Data Points list for New Slice
+        new_slice_button = ctk.CTkButton(DataC_cpane.frame, 
+                                     text="Start New Slice",  command=self.reset_data_points_for_new_slice)
+        new_slice_button.configure(height=HEIGHT, width=WIDTH)
+        new_slice_button.grid(row=2, column=0, sticky='nsew', pady=PAD)
+
+        # Export Data Points to CSV
         exportBtn = ctk.CTkButton(DataC_cpane.frame,
                               text="ExportCsv", 
                               command=self.prompt_export_data_points)  # Changed to prompt for export
         exportBtn.configure(height=HEIGHT, width=WIDTH)
-        exportBtn.grid(row=1, column=0, sticky='nsew', pady=PAD)
+        exportBtn.grid(row=3, column=0, sticky='nsew', pady=PAD)
         self.balloon.bind(importDataCubeBtn, "Click to open the Mayavi window with data.")
 
-
-
-        # Move Up and Move Down buttons
-        move_up_btn = ctk.CTkButton(DataC_cpane.frame, 
-                                text="Move Up 2cm", command=lambda: self.move_cut_plane('up', 2))
-        move_up_btn.grid(row=2, column=0, sticky='ew', pady=2)
-
-        move_down_btn = ctk.CTkButton(DataC_cpane.frame, text="Move Down 2cm", command=lambda: self.move_cut_plane('down', 2))
-        move_down_btn.grid(row=3, column=0, sticky='ew', pady=2)
-
-        new_slice_button = ctk.CTkButton(DataC_cpane.frame, 
-                                     text="Start New Slice",  command=self.reset_data_points_for_new_slice)
-        new_slice_button.configure(height=HEIGHT, width=WIDTH)
-        new_slice_button.grid(row=4, column=0, sticky='nsew', pady=PAD)
-
-
-        # Inside your GUI setup where you define buttons
-        generate_data_btn = ctk.CTkButton(DataC_cpane.frame, text="Generate Data", command=self.generate_data_for_current_position)
-        generate_data_btn.configure(height=HEIGHT, width=WIDTH)
-        generate_data_btn.grid(row=5, column=0, sticky='nsew', pady=PAD)
-        
         self.data_points = []
         self.scalar_cut_plane = None 
 
-
-        
-
     def loadInfoCollectScreen(self):
         ld = topLevel_test.Info_Collect()
-        
-
-# Button and checkbutton, these will
-# appear in collapsible pane container
-        
-
-    # def load_vtk_file(self):
-    #     # Open a file dialog to select the VTK or VTS file
-    #     self.vtk_file = filedialog.askopenfilename(filetypes=[("VTK files", "*.vtk"), ("VTS files", "*.vts")])
-    #     if self.vtk_file:
-    #         # Call function to read and display the VTK file
-    #         self.display_vtk_file()
-
-    # def display_vtk_file(self):
-    #     vtk_dataset = self.read_vtk_file(self.vtk_file)
-        
-    #     # Convert VTK dataset to numpy array
-    #     np_data = vtk_to_numpy(vtk_dataset.GetPointData().GetScalars())
-    #     dims = vtk_dataset.GetDimensions()
-    #     np_data = np_data.reshape(dims, order='F')  # Reshape according to VTK array layout
-
-    #     fig = plt.figure()
-    #     ax = fig.add_subplot(111, projection='3d')
-
-    #     # Basic visualization: plotting slices as 2D planes in 3D space
-    #     for i in range(dims[2]):  # Iterate over Z-axis slices
-    #         slice = np_data[:, :, i]
             
-    #         x, y = np.mgrid[0:slice.shape[0], 0:slice.shape[1]]
-    #         z = np.full(slice.shape, i)
-            
-    #         # Plotting the slice
-    #         ax.contourf(x, y, z, zdir='z', levels=[i-0.5, i+0.5], cmap="viridis", alpha=0.5)
-    #         ax.contourf(x, y, slice, zdir='z', offset=i, cmap="viridis")
-
-    #     ax.set_xlabel('X axis')
-    #     ax.set_ylabel('Y axis')
-    #     ax.set_zlabel('Z axis')
-    #     plt.show()
-        
-    # def read_vtk_file(self, filename):
-    #     # Determines file extension to choose appropriate reader
-    #     if filename.endswith(".vtk"):
-    #         reader = vtk.vtkStructuredPointsReader()
-    #     elif filename.endswith(".vts"):
-    #         reader = vtk.vtkXMLStructuredGridReader()
-    #     else:
-    #         raise ValueError("Unsupported file format")
-    #     reader.SetFileName(filename)
-    #     reader.Update()
-    #     return reader.GetOutput()
-
-    # def extract_slice(self, vtk_dataset, slice_index):
-    #     # Assumes the slice is along the Z-axis for simplicity
-    #     dims = vtk_dataset.GetDimensions()
-    #     if slice_index < 0 or slice_index >= dims[2]:
-    #         raise ValueError("Slice index out of range.")
-
-    #     # Extracting the slice (example for structured points, adjust if necessary)
-    #     slice_data = vtk_to_numpy(vtk_dataset.GetPointData().GetScalars())
-    #     slice_shape = (dims[1], dims[0])  # Assuming XY plane slices
-    #     slice_array = slice_data[slice_index * dims[0] * dims[1]:(slice_index + 1) * dims[0] * dims[1]]
-    #     slice_array = slice_array.reshape(slice_shape)
-
-    #     return slice_array
-
-    # def plot_slice(self, slice_array):
-    #     plt.imshow(slice_array, cmap='viridis', origin='lower')
-    #     plt.colorbar()
-    #     plt.show()
-
-    # def prompt_export_data_points(self):
-    #     filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
-    #     if filepath:
-    #         self.export_data_points(filepath)
-        
 
     def generate_data_for_current_position(self):
         if not hasattr(self, 'scalar_cut_plane'):
@@ -847,9 +761,9 @@ class GPRPyApp:
 
         for x in np.arange(x_start, x_end, x_interval):
             for y in np.arange(y_start, y_end, y_interval):
-                if len(self.data_points) >= 500:
-                    print(f"Reached 500 data points limit. Stopping data generation.")
-                    return  # Stop adding more points once 500 have been added
+                if len(self.data_points) >= 500:                                        #####Comment these lines #####
+                    print(f"Reached 500 data points limit. Stopping data generation.")  ##### to allow more points #####
+                    return  # Stop adding more points once 500 have been added          #####
                 g_value = self.get_scalar_value_at_point(x, y, z_depth)
                 if g_value is not None:
                     self.data_points.append((x, y, z_depth, g_value))
@@ -1029,12 +943,14 @@ class GPRPyApp:
 
 
     def export_data_points(self, filepath):
-            with open(filepath, 'w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow(['X', 'Y', 'Z', 'G'])  # Header
-                for point in self.data_points:
-                    writer.writerow(point)
-            print(f"Data points exported to {filepath}")
+        with open(filepath, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['X', 'Y', 'Z', 'G'])  # Header
+            for x, y, z, g_value in self.data_points:
+                # Format x, y, z, and g_value to have at least 4 significant digits
+                writer.writerow([f"{x:.4g}", f"{y:.4g}", f"{z:.16g}", f"{g_value:.16g}"])
+        print(f"Data points exported to {filepath}")
+
 
     # if the data is a strucutred grid we use this 
     # def get_scalar_value_at_point(self, src, point):
@@ -1055,42 +971,7 @@ class GPRPyApp:
     #     return None  # Placeholder for non-structured grid data
 
 
-    # def display_vtk_file(self, vtk_file):
-    #     # Open the VTK file
-    #     data = mlab.pipeline.open(vtk_file)
-
-    #     # Display the isosurface
-    #     isosurface = mlab.pipeline.iso_surface(data)
-
-    #     # Create a scalar cut plane
-    #     scalar_cut_plane = mlab.pipeline.scalar_cut_plane(data)
-
-    #     def on_cut_plane_move(obj, evt):
-    #         # Get the position of the ScalarCutPlane along the z-axis
-    #         origin = scalar_cut_plane.implicit_plane.origin
-
-    #         # Retrieve the data points at 2cm intervals along the z-axis
-    #         for i in range(50):  # Assuming 50 lines of GPR data
-    #             z_position = origin[2] + i * 0.02  # 2cm intervals
-    #             for j in range(500):  # 500 data points per line
-    #                 x = j * 0.02  # 2cm intervals along the x-axis
-    #                 y = i * 0.02  # 2cm intervals along the y-axis
-    #                 z = z_position
-    #                 g = ...  # Retrieve GPR measurement value at (x, y, z)
-    #                 # Record the XYZG points
-    #                 print(f"X: {x}, Y: {y}, Z: {z}, G: {g}")
-
-    #     # Add a callback function to the ScalarCutPlane to handle its move event
-    #     scalar_cut_plane.implicit_plane.widget.add_observer('InteractionEvent', on_cut_plane_move)
-
-    # def display_vtk_file(self, vtk_file):
-    #     # Define the preloaded modules you want to include
-    #     preloaded_modules = ['-m', 'Outline', '-m', 'IsoSurface', '-m', 'ScalarCutPlane']
-
-    #     # Call Mayavi2 with the appropriate arguments to display the VTK file
-    #     mayavi_command = ['mayavi2', '-d', vtk_file] + preloaded_modules
-    #     subprocess.run(mayavi_command)
-            
+  
 
     ####################################################################################### 
     #File operations functions
@@ -1306,22 +1187,6 @@ class GPRPyApp:
                 np.savetxt(filename+'_3D.txt',pick3D,delimiter='\t')
                 print('saved picked file as "%s"' %(filename+'_3D.txt'))       
 
-    #Set X-Range Function
-    # def setXrng(self):
-    #     xlow = sd.askfloat("Input","Min X value",initialvalue=self.xrng[0])
-    #     if xlow is not None:
-    #         xhigh = sd.askfloat("Input","Max X value",initialvalue=self.xrng[1])
-    #         if xhigh is not None:
-    #             self.xrng=[xlow,xhigh]
-
-    # #Set Y-Range Function
-    # def setYrng(self):
-    #     ylow = sd.askfloat("Input","Min Y value",initialvalue=self.yrng[0])
-    #     if ylow is not None:            
-    #         yhigh = sd.askfloat("Input","Max Y value",initialvalue=self.yrng[1])
-    #         if yhigh is not None:
-    #             self.prevyrng=self.yrng
-    #             self.yrng=[ylow,yhigh]
 
     def setXrng(self):
         xlow_text = self.tb_minx.get("1.0", "end-1c")
@@ -1376,12 +1241,6 @@ class GPRPyApp:
 
     #######################################################################################
     #Velocity Controls functions
-    # def setVelocity(self,proj):
-    #     velocity =  sd.askfloat("Input","Radar wave velocity [m/ns]?")        
-    #     if velocity is not None:
-    #         proj.setVelocity(velocity)
-    #         self.prevyrng=self.yrng
-    #         self.yrng=[0,np.max(proj.depth)]
 
     def setVelocity(self,proj):
         velocity_str = self.tb_velo.get("1.0", "end-1c")
@@ -1419,20 +1278,6 @@ class GPRPyApp:
             proj.topoCorrect(topofile,self.delimiter)
             self.prevyrng=self.yrng
             self.yrng=[proj.minTopo-np.max(proj.depth),proj.maxTopo]
-
-
-    # def topoCorrect(self, proj):
-    #     topofile = self.tb_topo.get("1.0", "end-1c")  # Get the value from the text box
-    #     if topofile:
-    #         if proj.velocity is None:
-    #             mesbox.showinfo("Topo Correct Error", "You have to set the velocity first")
-    #             return
-    #         out = self.getDelimiter()
-    #         proj.topoCorrect(topofile, self.delimiter)
-    #         self.prevyrng = self.yrng
-    #         self.yrng = [proj.minTopo - np.max(proj.depth), proj.maxTopo]
-            
-        
 
     #######################################################################################################################
     #Profile Controls functions
@@ -1670,3 +1515,74 @@ def main():#
 if __name__ == '__main__':
 	main()
 			
+
+# If you want to use matplotlib for dispalying vtk data .
+# def load_vtk_file(self):
+    #     # Open a file dialog to select the VTK or VTS file
+    #     self.vtk_file = filedialog.askopenfilename(filetypes=[("VTK files", "*.vtk"), ("VTS files", "*.vts")])
+    #     if self.vtk_file:
+    #         # Call function to read and display the VTK file
+    #         self.display_vtk_file()
+
+    # def display_vtk_file(self):
+    #     vtk_dataset = self.read_vtk_file(self.vtk_file)
+        
+    #     # Convert VTK dataset to numpy array
+    #     np_data = vtk_to_numpy(vtk_dataset.GetPointData().GetScalars())
+    #     dims = vtk_dataset.GetDimensions()
+    #     np_data = np_data.reshape(dims, order='F')  # Reshape according to VTK array layout
+
+    #     fig = plt.figure()
+    #     ax = fig.add_subplot(111, projection='3d')
+
+    #     # Basic visualization: plotting slices as 2D planes in 3D space
+    #     for i in range(dims[2]):  # Iterate over Z-axis slices
+    #         slice = np_data[:, :, i]
+            
+    #         x, y = np.mgrid[0:slice.shape[0], 0:slice.shape[1]]
+    #         z = np.full(slice.shape, i)
+            
+    #         # Plotting the slice
+    #         ax.contourf(x, y, z, zdir='z', levels=[i-0.5, i+0.5], cmap="viridis", alpha=0.5)
+    #         ax.contourf(x, y, slice, zdir='z', offset=i, cmap="viridis")
+
+    #     ax.set_xlabel('X axis')
+    #     ax.set_ylabel('Y axis')
+    #     ax.set_zlabel('Z axis')
+    #     plt.show()
+        
+    # def read_vtk_file(self, filename):
+    #     # Determines file extension to choose appropriate reader
+    #     if filename.endswith(".vtk"):
+    #         reader = vtk.vtkStructuredPointsReader()
+    #     elif filename.endswith(".vts"):
+    #         reader = vtk.vtkXMLStructuredGridReader()
+    #     else:
+    #         raise ValueError("Unsupported file format")
+    #     reader.SetFileName(filename)
+    #     reader.Update()
+    #     return reader.GetOutput()
+
+    # def extract_slice(self, vtk_dataset, slice_index):
+    #     # Assumes the slice is along the Z-axis for simplicity
+    #     dims = vtk_dataset.GetDimensions()
+    #     if slice_index < 0 or slice_index >= dims[2]:
+    #         raise ValueError("Slice index out of range.")
+
+    #     # Extracting the slice (example for structured points, adjust if necessary)
+    #     slice_data = vtk_to_numpy(vtk_dataset.GetPointData().GetScalars())
+    #     slice_shape = (dims[1], dims[0])  # Assuming XY plane slices
+    #     slice_array = slice_data[slice_index * dims[0] * dims[1]:(slice_index + 1) * dims[0] * dims[1]]
+    #     slice_array = slice_array.reshape(slice_shape)
+
+    #     return slice_array
+
+    # def plot_slice(self, slice_array):
+    #     plt.imshow(slice_array, cmap='viridis', origin='lower')
+    #     plt.colorbar()
+    #     plt.show()
+
+    # def prompt_export_data_points(self):
+    #     filepath = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
+    #     if filepath:
+    #         self.export_data_points(filepath)
