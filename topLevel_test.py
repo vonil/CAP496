@@ -62,7 +62,7 @@ class Info_Collect(tk.Toplevel):
         self.report_doc ='/proc/report/'
         self.report_figures = '/proc/report/figures/'
         self.report_figures_interp = '/proc/report/figures/interp/'
-
+        self.configure(background="light grey")
         raw_data_lb = ttk.Label(self, text = 'Raw data folder')
         self.raw_data = StringVar()
         raw_data_E = ttk.Entry(self, textvariable= self.raw_data)
