@@ -82,7 +82,7 @@ class GPRPyApp:
 
         proj = gp.gprpyProfile()
 
-        btn_frm = ctk.CTkScrollableFrame(master, border_width= 1, width = 570, bg_color="light grey", fg_color="light grey")
+        btn_frm = ctk.CTkScrollableFrame(master, border_width= 1, width = 590, bg_color="light grey", fg_color="light grey")
     
         btn_frm.grid(row = 0, column= 0, sticky= 'ns', rowspan = 2)
         # btn_frm.grid_propagate(0)

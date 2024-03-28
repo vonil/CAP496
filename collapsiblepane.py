@@ -33,7 +33,7 @@ class CollapsiblePane(ttk.Frame):
         self._separator.grid(row=0, column=1, sticky="we")
 
         self.frame = LeftAlignedFrame(self)
-        self.frame.configure(background="light grey")  # Set frame background color
+        self.frame.configure(background="light grey", padx=10, pady = 10)  # Set frame background color
         self._activate()
 
     def _activate(self):
