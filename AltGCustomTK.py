@@ -691,7 +691,7 @@ class GPRPyApp:
         
         # # Interpolation CP =====================================================================
         Interp_cpane = cp(btn_frm, 'Interpolate -', 'Interpolate +')
-        Interp_cpane.grid(row=5, column=0, sticky='ew')
+        Interp_cpane.grid(row=4, column=0, sticky='ew')
 
         makeDataCubeBtn = ctk.CTkButton(Interp_cpane.frame,
             text="Interpolate",
@@ -704,7 +704,7 @@ class GPRPyApp:
 
         # DataCube Button CP ==========================================================================
         DataC_cpane = cp(btn_frm, 'DataCube -', 'DataCube +')
-        DataC_cpane.grid(row=4, column=0, sticky='ew')
+        DataC_cpane.grid(row=5, column=0, sticky='ew')
         DataC_cpane.grid_propagate
         DataC_cpane.pack_propagate
 
