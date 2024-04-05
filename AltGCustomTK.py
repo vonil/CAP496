@@ -1,6 +1,6 @@
 import sys
 import customtkinter as ctk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox, simpledialog, ttk
 import tkinter as tk
 from tkinter import filedialog as fd
 from tkinter import simpledialog as sd
@@ -736,15 +736,55 @@ class GPRPyApp:
         exportBtn.configure(height=HEIGHT, width=WIDTH)
         exportBtn.grid(row=3, column=0, sticky='nsew', pady=PAD)
         self.balloon.bind(exportBtn, "Export Generated Points to CSV")
+
+        exportSlicesBtn = ctk.CTkButton(DataC_cpane.frame,
+                              text="Auto Slice", 
+                              command=self.auto_slice_and_export)  
+        exportSlicesBtn.configure(height=HEIGHT, width=WIDTH)
+        exportSlicesBtn.grid(row=4, column=0, sticky='nsew', pady=PAD)
+        self.balloon.bind(exportSlicesBtn, "Export data points for every 5 cm slice to separate CSV files")
+
        
 
 
         self.data_points = []
         self.scalar_cut_plane = None 
 
+    def auto_slice_and_export(self):
+        number_of_slices = simpledialog.askinteger("Input", "How many 5 cm slices do you want?")
+        if number_of_slices is None:
+            print("User cancelled the slicing operation.")
+            return
 
-        
+        if not hasattr(self, 'current_vtk_dataset') or self.current_vtk_dataset is None:
+            print("Dataset is not loaded.")
+            return
 
+        z_max = max([point[2] for point in self.current_vtk_dataset.points.to_array()])
+        z_min = min([point[2] for point in self.current_vtk_dataset.points.to_array()])
+        slice_thickness = 0.05  # 5 cm in meters.
+
+        for slice_index in range(number_of_slices):
+            z_current = z_max - slice_index * slice_thickness
+            if z_current < z_min:
+                print(f"Reached the bottom of the dataset at slice {slice_index}.")
+                break
+
+            self.scalar_cut_plane.implicit_plane.origin = (0, 0, z_current)
+            self.window.update_idletasks()  # Wait for the cut plane to update.
+
+            # Explicitly generate data for the current depth.
+            self.generate_slice_data(z_current)
+
+            if not self.data_points:
+                print(f"No data points generated for slice {slice_index+1}.")
+                continue
+
+            filename = f"slice_{slice_index+1}_at_depth_{z_current:.2f}.csv"
+            self.export_data_points(filename)
+            print(f"Exported {filename}")
+
+   
     def loadInfoCollectScreen(self):
         ld = topLevel_test.Info_Collect()
         
@@ -791,41 +831,13 @@ class GPRPyApp:
             # Call function to display the VTK file
             self.display_vtk_file()
 
-
-    def move_cut_plane(self, direction, step=2.0):
-        if not hasattr(self, 'scalar_cut_plane'):
-            print("Scalar cut plane is not initialized.")
-            return
-
-        # Calculate the new Z depth based on direction
-        current_position = self.scalar_cut_plane.implicit_plane.origin
-        if direction == 'up':
-            new_z = current_position[2] + step / 100.0  # Convert cm to meters if necessary
-        elif direction == 'down':
-            new_z = current_position[2] - step / 100.0
-        else:
-            print("Invalid direction. Use 'up' or 'down'.")
-            return
-
-        # Update the plane's Z position
-        self.scalar_cut_plane.implicit_plane.origin = (current_position[0], current_position[1], new_z)
-
-        # Create a scalar cut plane
-        # scalar_cut_plane = mlab.pipeline.scalar_cut_plane(data)    
-        # Force update visualization
-        self.scalar_cut_plane.implicit_plane.scene.render()
-
-        # Generate data points for the new slice
-        #self.generate_slice_data(new_z)
-
-    
                 
     def display_vtk_file(self):
         src = mlab.pipeline.open(self.vtk_file)
 
         try:
             if hasattr(src.outputs[0], 'input'):
-                vtk_dataset = src.outputs[0].input  # Accessing the input to AssignAttribute
+                vtk_dataset = src.outputs[0].input
                 if hasattr(vtk_dataset, 'point_data'):
                     scalar_range = vtk_dataset.point_data.scalars.range
                 else:
@@ -834,7 +846,7 @@ class GPRPyApp:
                 raise AttributeError("src.outputs[0] does not have 'input'.")
         except AttributeError as e:
             print(e)
-            return  # Exit if we cannot correctly access the dataset
+            return
 
         # Generate contour levels within the valid scalar range of the data
         contour_levels = [scalar_range[0] + (scalar_range[1] - scalar_range[0]) * 0.25,
@@ -843,16 +855,13 @@ class GPRPyApp:
         mlab.pipeline.iso_surface(src, contours=contour_levels, opacity=0.3)
         self.scalar_cut_plane = mlab.pipeline.scalar_cut_plane(src, plane_orientation='z_axes')
 
-        # mlab.axes(xlabel='X', ylabel='Y', zlabel='Z', nb_labels=5)
-        # # Retrieve the bounds of your dataset for grid alignment
+        # Adjust scalar_cut_plane to start at the top
+        z_max = max([point[2] for point in vtk_dataset.points.to_array()])
+        self.scalar_cut_plane.implicit_plane.origin = (0, 0, z_max)
 
-        # mlab.draw()
-
-        # After initializing self.scalar_cut_plane
         self.scalar_cut_plane.implicit_plane.widget.add_observer('InteractionEvent', self.on_cut_plane_move)
+        self.current_vtk_dataset = vtk_dataset
 
-        # Inside display_vtk_file, after successfully loading the dataset
-        self.current_vtk_dataset = vtk_dataset  # Ensure this references your loaded VTK dataset object
 
 
     def on_cut_plane_move(self, obj, evt):
